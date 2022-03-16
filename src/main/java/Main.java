@@ -30,9 +30,9 @@ public class Main {
         String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
         String fileName = "data.csv";
         List<Employee> list = parseCSV(columnMapping, fileName);
-        System.out.println(list);
+        //System.out.println(list);
         String json = listToJson(list);
-        System.out.println(json);
+        //System.out.println(json);
 
         writeString(json, "data1.json");
 
