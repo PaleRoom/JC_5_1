@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -29,9 +30,10 @@ public class Main {
         String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
         String fileName = "data.csv";
         List<Employee> list = parseCSV(columnMapping, fileName);
-
+        System.out.println(list);
         String json = listToJson(list);
-        //System.out.println(json);
+        System.out.println(json);
+
         writeString(json, "data1.json");
 
         //Реализация задания 2
@@ -42,7 +44,6 @@ public class Main {
         String jsonS = readString("data1.json");
         List<Employee> list3 = jsonToList(jsonS);
         list3.forEach(System.out::println);
-        //System.out.println(list3);
 
 
     }
@@ -69,8 +70,6 @@ public class Main {
     public static String listToJson(List<Employee> list) {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-
-        //System.out.println(gson.toJson(list));
         Type listType = new TypeToken<List<Employee>>() {
         }.getType();
 
@@ -78,11 +77,10 @@ public class Main {
     }
 
     public static void writeString(String inpJson, String jsonFileName) {
-        JSONObject jsonObj = new JSONObject();
-        jsonObj.put("Employees", inpJson);
         try (FileWriter file = new
                 FileWriter(jsonFileName)) {
-            file.write(jsonObj.toJSONString());
+
+            file.write(inpJson);
             file.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,18 +114,18 @@ public class Main {
 
 
     // Реализация методов задания 3
-    private static String readString(String fileName) {
-        JSONParser parser = new JSONParser();
-        String staff = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
-            Object obj = parser.parse(br);
-            JSONObject jsonObject = (JSONObject) obj;
-            staff = (String) jsonObject.get("Employees");
-        } catch (IOException | ParseException e) {
+
+    private static String readString(String str) {
+        StringBuilder resultStr = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(str))) {
+            String s;
+            while ((s = reader.readLine()) != null) {
+                resultStr.append(s);
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return staff;
+        return resultStr.toString();
     }
 
     private static List<Employee> jsonToList(String str) {
@@ -147,3 +145,22 @@ public class Main {
         return list;
     }
 }
+
+//readstring для чтения из JSON по ключу
+/* private static String readString(String fileName) {
+        JSONParser parser = new JSONParser();
+        String staff = null;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            Object obj = parser.parse(br);
+            JSONObject jsonObject = (JSONObject) obj;
+            jsonObject.forEach(System.out::println);
+            staff = (String) jsonObject.get("Employee");
+            String s = jsonObject.toString();
+            staff = jsonObject.toJSONString();
+            System.out.println(staff);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return staff;
+    }*/
